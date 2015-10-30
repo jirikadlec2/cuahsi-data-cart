@@ -22,6 +22,12 @@ class CuahsiDataCartDemo(TethysAppBase):
         url_maps = (UrlMap(name='home',
                            url='data-cart',
                            controller='data_cart.controllers.home'),
+                    UrlMap(name='showfile',
+                           url='showfile/{id}',
+                           controller='data_cart.controllers.showfile'),
+                    UrlMap(name='addfile',
+                           url='addfile',
+                           controller='data_cart.controllers.addfile')
         )
 
         return url_maps

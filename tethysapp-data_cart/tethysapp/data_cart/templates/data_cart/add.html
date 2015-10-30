@@ -1,0 +1,27 @@
+{% extends "data_cart/base.html" %}
+{% load tethys_gizmos %}
+
+{% block app_navigation_items %}
+  <li class="title">App Navigation</li>
+  <li><a href="/apps/data-cart/">Home</a></li>
+  <li class="active"><a href="/apps/data-cart/addfile">Add WaterML</a></li>
+{% endblock %}
+
+{% block app_content %}
+  <h1>Add WaterML file for testing</h1>
+  <form method="post">
+    {% csrf_token %}
+    {% gizmo text_input text_input_options %}
+    <input type="submit" name="name-form-submit" class="btn-default">
+  </form>
+
+{% if added %}
+  <p>File added successfully!{{zip_file_id}}</p>
+{% endif %}
+  
+{% endblock %}
+
+{% block app_actions %}
+  <a href="" class="btn btn-default">Next</a>
+  <a href="" class="btn btn-default">Back</a>
+{% endblock %}

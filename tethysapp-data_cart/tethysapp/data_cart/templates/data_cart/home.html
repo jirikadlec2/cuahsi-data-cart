@@ -1,17 +1,32 @@
 {% extends "data_cart/base.html" %}
+{% load tethys_gizmos %}
+
+{% block app_navigation_items %}
+  <li class="title">App Navigation</li>
+  <li class="active"><a href="">Home</a></li>
+  <li><a href="/apps/data-cart/addfile">Add WaterML</a></li>
+{% endblock %}
 
 {% block app_content %}
-  <h1>Downloaded Results</h1>
-  <table>
-  	<tr>
-  	<td><span>Timpanogos Divide - Snow Depth</span>&nbsp;&nbsp;</td><td><a href="/static/data_cart/waterml/timpanogos_divide_snow_depth.xml">WaterML File</a>&nbsp;&nbsp;</td><td><a class="btn btn-default" href="/apps/ts-converter?src=cuahsi&res_id=timpanogos_divide_snow_depth.xml" target="_blank" >Launch App</a></td></tr>
-  	<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-  	<td><span>Cascade Mountain - Snow Depth</span>&nbsp;&nbsp;</td><td><a target="_blank" href="/static/data_cart/waterml/cascade_mountain_snow_depth.xml">WaterML File</a>&nbsp;&nbsp;</td><td><a class="btn btn-default" href="/apps/ts-converter?src=cuahsi&res_id=cascade_mountain_snow_depth.xml" target="_blank" >Launch App</a></td></tr>
-    <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-  	<td><span>ZIP File (2 time series)</span>&nbsp;&nbsp;</td><td><a target="_blank" href="/static/data_cart/waterml/sampleWaterML.zip">ZIP File</a>&nbsp;&nbsp;</td><td><a class="btn btn-default" href="/apps/ts-converter?src=cuahsi&res_id=sampleWaterML.zip" target="_blank" >Launch App</a></td></tr>
+  <h1>WaterML Test Data Files</h1>
 
-  </table>
-  
+  <table border="1" style="width:100%">
+  <tr >
+      <th >Name</th>
+      <th>URL</th>
+      <th>Size</th>
+      <th>Run!</th>
+  </tr>
+    {%for file in file_info%}
+  <tr class ="red">
+      <td>{{file.name}}</td>
+      <td><a href="{{file.uri}}">{{file.uri}}</a></td>
+      <td>{{file.size}}</td>
+      <td><a href="{{file.app}}">RUN!</a></td>
+  </tr>
+    {%endfor%}
+</table>
+
 {% endblock %}
 
 {% block app_actions %}
