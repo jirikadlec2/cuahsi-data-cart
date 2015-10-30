@@ -20,8 +20,8 @@ def home(request):
 
     zip_info = utilities.list_zip_files(request)
     print zip_info
-
-    context = {'file_info': zip_info}
+    workspace = utilities.get_workspace()
+    context = {'file_info': zip_info, 'workspace': workspace}
     return render(request, 'data_cart/home.html', context)
 
 
