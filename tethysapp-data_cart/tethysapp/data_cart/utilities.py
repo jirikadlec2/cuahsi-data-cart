@@ -51,8 +51,9 @@ def list_zip_files(request):
     domain = request.META['HTTP_HOST']
     for dc in dcarts:
         full_path = os.path.join(workspace, dc.res_id)
-        uri = base_uri + 'showfile/' + dc.res_id
-        app_uri = 'http://' + domain + '/apps/timeseries-viewer/?src=test&res_id=' + dc.res_id
+        res_id_no_zip = dc.res_id.split('.')[0]
+        uri = base_uri + 'showfile/' + res_id_no_zip
+        app_uri = 'http://' + domain + '/apps/timeseries-viewer/?src=test&res_id=' + res_id_no_zip
         filesize = getHumanReadableSize(full_path)
         file_info.append({'name': dc.res_id, 'uri': uri, 'size': filesize, 'app': app_uri})
     session.close()

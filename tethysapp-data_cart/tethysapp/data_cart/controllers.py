@@ -30,6 +30,8 @@ def showfile(request, id):
     """
     Controller for the app home page.
     """
+    if not id.endswith('.zip'):
+        id = id + '.zip'
     base_path = utilities.get_workspace()
     file_path = os.path.join(base_path, id)
     response = HttpResponse(FileWrapper(open(file_path)), content_type='application/zip')
