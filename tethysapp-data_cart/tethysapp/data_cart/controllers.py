@@ -59,7 +59,7 @@ def addfile(request):
 
         resid = os.path.basename(zip_info['zip_name'])
         filesize = zip_info['bytes']
-        dc = DataCart(res_id = resid, bytes = filesize)
+        dc = DataCart(res_id = resid, bytes = filesize, url = waterml_url)
         session = SessionMaker()
 
         # query for existing..

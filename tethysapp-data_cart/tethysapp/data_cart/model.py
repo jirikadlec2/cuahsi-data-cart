@@ -19,7 +19,9 @@ class DataCart(Base):
     id = Column(Integer, primary_key=True)
     res_id = Column(String)
     bytes = Column(Integer)
+    url = Column(String)
 
-    def __init__(self, res_id, bytes):
+    def __init__(self, res_id, bytes, url):
         self.res_id = res_id
         self.bytes = bytes
+        self.url = url

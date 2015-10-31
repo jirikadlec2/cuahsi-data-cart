@@ -51,6 +51,12 @@ def list_zip_files(request):
     domain = request.META['HTTP_HOST']
     for dc in dcarts:
         full_path = os.path.join(workspace, dc.res_id)
+
+        # if necessary, recreate the zip file
+        if not os.path.exists(full_path):
+            print 'making zip file for url: ' + dc.url
+            make_waterml_zip(dc.url)
+
         res_id_no_zip = dc.res_id.split('.')[0]
         uri = base_uri + 'showfile/' + res_id_no_zip
         app_uri = 'http://' + domain + '/apps/timeseries-viewer/?src=test&res_id=' + res_id_no_zip
@@ -117,12 +123,12 @@ def make_waterml_zip(url):
             else:
                 fileSize = 0
 
-            return {'site_name': site_name, 'zip_name': zip_name, 'status': 'ok', 'bytes': fileSize}
+            return {'site_name': site_name, url: url, 'zip_name': zip_name, 'status': 'ok', 'bytes': fileSize}
         else:
             error_message = "Parsing error: The waterml document doesn't appear to be a WaterML 1.0/1.1 time series"
             print error_message
-            return {'site_name': '', 'zip_name': '', 'status': 'error', 'bytes':0}
+            return {'site_name': '', url: url, 'zip_name': '', 'status': 'error', 'bytes':0}
     except Exception, e:
         print e
         print "Parsing error: The Data in the Url, or in the request, was not correctly formatted for water ml 1."
-        return {'site_name': '', 'zip_name': '', 'status': 'error', 'bytes':0}
+        return {'site_name': '', url:url, 'zip_name': '', 'status': 'error', 'bytes':0}
