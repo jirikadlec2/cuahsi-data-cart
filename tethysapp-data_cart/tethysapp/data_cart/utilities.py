@@ -3,6 +3,7 @@ from lxml import etree
 from .app import CuahsiDataCartDemo as app
 import unidecode
 import requests
+from .model import engine, SessionMaker, Base, DataCart
 
 from datetime import datetime
 from datetime import timedelta
@@ -28,7 +29,6 @@ def getHumanReadableSize(filepath,precision=2):
         suffixIndex += 1 #increment the index of the suffix
         size = size/1024.0 #apply the division
 
-
     return "%0.2f %s" % (size,suffixes[suffixIndex])
 
 
@@ -41,17 +41,21 @@ def get_app_base_uri(request):
 
 def list_zip_files(request):
     workspace = get_workspace()
-    files = [f for f in os.listdir(workspace) if os.path.isfile(f)]
+
+    # we fetch the names from the DB
+    session = SessionMaker()
+    dcarts = session.query(DataCart).all()
+
     file_info = []
     base_uri = get_app_base_uri(request)
     domain = request.META['HTTP_HOST']
-    for f in files:
-        full_path = os.path.join(workspace, f)
-        basename = os.path.basename(f)
-        uri = base_uri + 'showfile/' + basename
-        app_uri = 'http://' + domain + '/apps/timeseries-viewer/?src=test&res_id=' + basename
+    for dc in dcarts:
+        full_path = os.path.join(workspace, dc.res_id)
+        uri = base_uri + 'showfile/' + dc.res_id
+        app_uri = 'http://' + domain + '/apps/timeseries-viewer/?src=test&res_id=' + dc.res_id
         filesize = getHumanReadableSize(full_path)
-        file_info.append({'name': basename, 'uri': uri, 'size': filesize, 'app': app_uri})
+        file_info.append({'name': dc.res_id, 'uri': uri, 'size': filesize, 'app': app_uri})
+    session.close()
     return file_info
 
 
@@ -107,12 +111,17 @@ def make_waterml_zip(url):
             finally:
                 zf.close()
 
-            return {'site_name': site_name, 'zip_name': zip_name, 'status': 'ok'}
+            if os.path.exists(zip_name):
+                fileSize = os.path.getsize(zip_name)
+            else:
+                fileSize = 0
+
+            return {'site_name': site_name, 'zip_name': zip_name, 'status': 'ok', 'bytes': fileSize}
         else:
             error_message = "Parsing error: The waterml document doesn't appear to be a WaterML 1.0/1.1 time series"
             print error_message
-            return {'site_name': '', 'zip_name': '', 'status': 'error'}
+            return {'site_name': '', 'zip_name': '', 'status': 'error', 'bytes':0}
     except Exception, e:
         print e
         print "Parsing error: The Data in the Url, or in the request, was not correctly formatted for water ml 1."
-        return {'site_name': '', 'zip_name': '', 'status': 'error'}
+        return {'site_name': '', 'zip_name': '', 'status': 'error', 'bytes':0}

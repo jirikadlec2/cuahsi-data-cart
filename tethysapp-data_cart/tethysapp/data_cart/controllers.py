@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.servers.basehttp import FileWrapper
 from django.http import HttpResponse
 from tethys_gizmos.gizmo_options import TextInput
+from .model import engine, SessionMaker, Base, DataCart
 import requests
 import utilities
 import os
@@ -53,6 +54,24 @@ def addfile(request):
         zip_info = utilities.make_waterml_zip(waterml_url)
         print zip_info
         zip_file_id = zip_info['site_name']
+
+        resid = os.path.basename(zip_info['zip_name'])
+        filesize = zip_info['bytes']
+        dc = DataCart(res_id = resid, bytes = filesize)
+        session = SessionMaker()
+
+        # query for existing..
+        add_new = True
+        dcarts = session.query(DataCart).all()
+        for existing_dc in dcarts:
+            if existing_dc.res_id == dc.res_id:
+                add_new = False
+
+        # save to database..
+        if add_new:
+            session.add(dc)
+            session.commit()
+        session.close()
 
     # now we download & zip & save the waterml URL
     context = {'waterml-url': waterml_url,

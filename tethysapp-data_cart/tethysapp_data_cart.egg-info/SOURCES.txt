@@ -6,6 +6,7 @@ tethysapp/data_cart/controllers.py
 tethysapp/data_cart/handoff.py
 tethysapp/data_cart/init_stores.py
 tethysapp/data_cart/model.py
+tethysapp/data_cart/utilities.py
 tethysapp_data_cart.egg-info/PKG-INFO
 tethysapp_data_cart.egg-info/SOURCES.txt
 tethysapp_data_cart.egg-info/dependency_links.txt
